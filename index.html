@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BotW 魔物図鑑 - 敵データベース</title>
+  <style>
+    /* ==========================================
+       カスタムプロパティ（テーマカラー）
+       ========================================== */
+    :root {
+      --bg-primary: #1a1f2e;
+      --bg-secondary: #242b3d;
+      --bg-tertiary: #2d3548;
+      --bg-card: #2a3245;
+      --text-primary: #e8eef4;
+      --text-secondary: #a8b8c8;
+      --text-muted: #6b7a8e;
+      --accent-red: #e74c3c;
+      --accent-orange: #f39c12;
+      --accent-gold: #f4d03f;
+      --accent-blue: #5fb3e4;
+      --accent-purple: #a78bfa;
+      --accent-green: #7fda8c;
+      --accent-silver: #c0c0c0;
+      --border-color: #3d4a5c;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    /* ==========================================
+       リセット・ベース
+       ========================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, #0f1318 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ==========================================
+       ヘッダー
+       ========================================== */
+    header {
+      background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+      padding: 24px 20px;
+      text-align: center;
+      border-bottom: 2px solid var(--accent-red);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 4L24 14H34L26 20L30 30L20 24L10 30L14 20L6 14H16L20 4Z' fill='%23e74c3c' fill-opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--accent-red);
+      text-shadow: 0 2px 10px rgba(231, 76, 60, 0.3);
+      position: relative;
+    }
+
+    h1 span {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-weight: 400;
+      margin-top: 4px;
+    }
+
+    /* ==========================================
+       メインコンテナ
+       ========================================== */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* ==========================================
+       コントロールパネル
+       ========================================== */
+    .control-panel {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+    }
+
+    .control-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: flex-end;
+    }
+
+    .control-group {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .control-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    select {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    select:focus {
+      border-color: var(--accent-blue);
+    }
+
+    /* ==========================================
+       色フィルターボタン
+       ========================================== */
+    .color-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .color-filter-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.8rem;
+    }
+
+    .color-filter-btn:hover {
+      border-color: var(--accent-blue);
+    }
+
+    .color-filter-btn.active {
+      background: var(--accent-blue);
+      color: var(--bg-primary);
+      border-color: var(--accent-blue);
+    }
+
+    .color-filter-btn .color-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    /* ==========================================
+       統計バー
+       ========================================== */
+    .stats-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .stats-count {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .stats-count strong {
+      color: var(--accent-gold);
+      font-size: 1.1rem;
+    }
+
+    .sort-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .sort-btn {
+      padding: 8px 16px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sort-btn:hover {
+      background: var(--bg-secondary);
+      border-color: var(--accent-blue);
+    }
+
+    .sort-btn.active {
+      background: var(--accent-blue);
+      color: var(--bg-primary);
+      border-color: var(--accent-blue);
+    }
+
+    .sort-btn .arrow {
+      font-size: 0.75rem;
+    }
+
+    /* ==========================================
+       ビュー切り替え
+       ========================================== */
+    .view-toggle {
+      display: flex;
+      gap: 8px;
+    }
+
+    .view-btn {
+      padding: 8px 12px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 1rem;
+    }
+
+    .view-btn:hover {
+      background: var(--bg-secondary);
+    }
+
+    .view-btn.active {
+      background: var(--accent-blue);
+      color: var(--bg-primary);
+      border-color: var(--accent-blue);
+    }
+
+    /* ==========================================
+       敵カード一覧
+       ========================================== */
+    .enemy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .enemy-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .enemy-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-red);
+      box-shadow: 0 8px 30px rgba(231, 76, 60, 0.2);
+    }
+
+    .enemy-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent-red), var(--accent-orange));
+    }
+
+    .enemy-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .enemy-name {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .enemy-name-en {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .enemy-badges {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-category {
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-color);
+    }
+
+    .badge-rank {
+      background: var(--accent-purple);
+      color: white;
+    }
+
+    .badge-rank.normal { background: #6b7280; }
+    .badge-rank.medium { background: #3b82f6; }
+    .badge-rank.high { background: #8b5cf6; }
+    .badge-rank.max { background: #c0c0c0; color: #1a1f2e; }
+    .badge-rank.dlc { background: linear-gradient(135deg, #f4d03f, #f39c12); color: #1a1f2e; }
+    .badge-rank.boss { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+    .badge-rank.lastboss { background: linear-gradient(135deg, #9333ea, #7c3aed); }
+
+    .badge-dlc {
+      background: linear-gradient(135deg, #f4d03f, #f39c12);
+      color: #1a1f2e;
+    }
+
+    .color-indicator {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid var(--border-color);
+      flex-shrink: 0;
+    }
+
+    .color-indicator.赤 { background: #e74c3c; }
+    .color-indicator.青 { background: #3498db; }
+    .color-indicator.黒 { background: #2c3e50; }
+    .color-indicator.銀 { background: linear-gradient(135deg, #c0c0c0, #a0a0a0); }
+    .color-indicator.金 { background: linear-gradient(135deg, #f4d03f, #f39c12); }
+    .color-indicator.緑 { background: #27ae60; }
+    .color-indicator.白 { background: #ecf0f1; }
+    .color-indicator.黄 { background: #f1c40f; }
+    .color-indicator.骨 { background: linear-gradient(135deg, #bdc3c7, #95a5a6); }
+    .color-indicator.灰 { background: #7f8c8d; }
+    .color-indicator.機械 { background: linear-gradient(135deg, #e67e22, #d35400); }
+    .color-indicator.砂 { background: #d4a574; }
+    .color-indicator.紫 { background: #9b59b6; }
+
+    .enemy-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .stat-box {
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .stat-value.hp {
+      color: var(--accent-red);
+    }
+
+    .stat-value.attack {
+      color: var(--accent-orange);
+    }
+
+    .enemy-description {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      border-top: 1px solid var(--border-color);
+      padding-top: 12px;
+    }
+
+    /* ==========================================
+       テーブル表示
+       ========================================== */
+    .enemy-table-wrapper {
+      overflow-x: auto;
+      display: none;
+    }
+
+    .enemy-table-wrapper.show {
+      display: block;
+    }
+
+    .enemy-grid.hide {
+      display: none;
+    }
+
+    .enemy-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .enemy-table th,
+    .enemy-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .enemy-table th {
+      background: var(--bg-tertiary);
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+
+    .enemy-table th:hover {
+      background: var(--bg-secondary);
+    }
+
+    .enemy-table th.sortable::after {
+      content: ' ↕';
+      opacity: 0.5;
+    }
+
+    .enemy-table th.sorted-asc::after {
+      content: ' ↑';
+      opacity: 1;
+      color: var(--accent-blue);
+    }
+
+    .enemy-table th.sorted-desc::after {
+      content: ' ↓';
+      opacity: 1;
+      color: var(--accent-blue);
+    }
+
+    .enemy-table tbody tr {
+      transition: background 0.2s;
+    }
+
+    .enemy-table tbody tr:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .enemy-table td {
+      font-size: 0.9rem;
+    }
+
+    .enemy-table .hp-cell {
+      color: var(--accent-red);
+      font-weight: 600;
+    }
+
+    .enemy-table .attack-cell {
+      color: var(--accent-orange);
+      font-weight: 600;
+    }
+
+    /* ==========================================
+       フッター
+       ========================================== */
+    footer {
+      text-align: center;
+      padding: 24px 20px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border-color);
+      margin-top: 40px;
+    }
+
+    /* ==========================================
+       アニメーション
+       ========================================== */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    /* ==========================================
+       空状態
+       ========================================== */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-state .icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-state p {
+      font-size: 1.1rem;
+    }
+
+    /* ==========================================
+       レスポンシブ
+       ========================================== */
+    @media (max-width: 768px) {
+      .control-row {
+        flex-direction: column;
+      }
+
+      .control-group {
+        width: 100%;
+      }
+
+      .stats-bar {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .enemy-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sort-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>
+      ⚔️ BotW 魔物図鑑
+      <span>ゼルダの伝説 ブレスオブザワイルド - 敵データベース</span>
+    </h1>
+  </header>
+
+  <div class="container">
+    <!-- コントロールパネル -->
+    <div class="control-panel">
+      <div class="control-row">
+        <div class="control-group" style="flex: 2;">
+          <label>🔍 敵を検索</label>
+          <input type="text" class="search-input" id="searchInput" placeholder="名前で検索...">
+        </div>
+        <div class="control-group">
+          <label>📂 カテゴリ</label>
+          <select id="categoryFilter">
+            <option value="">すべて</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>⭐ ランク</label>
+          <select id="rankFilter">
+            <option value="">すべて</option>
+            <option value="ノーマル">ノーマル</option>
+            <option value="中級">中級</option>
+            <option value="上級">上級</option>
+            <option value="最上級">最上級</option>
+            <option value="DLC最上級">DLC最上級（金色）</option>
+            <option value="特殊">特殊</option>
+            <option value="ボス級">ボス級</option>
+            <option value="ラスボス">ラスボス</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 色フィルター -->
+      <div class="color-filters" id="colorFilters">
+        <!-- JSで生成 -->
+      </div>
+    </div>
+
+    <!-- 統計バーとソート -->
+    <div class="stats-bar">
+      <div class="stats-count">
+        表示中: <strong id="displayCount">0</strong> / <span id="totalCount">0</span> 体
+      </div>
+      <div style="display: flex; gap: 16px; align-items: center;">
+        <div class="view-toggle">
+          <button class="view-btn active" id="cardViewBtn" title="カード表示">📇</button>
+          <button class="view-btn" id="tableViewBtn" title="テーブル表示">📊</button>
+        </div>
+        <div class="sort-buttons">
+          <button class="sort-btn" data-sort="name">
+            名前 <span class="arrow">↕</span>
+          </button>
+          <button class="sort-btn active" data-sort="hp" data-order="desc">
+            HP <span class="arrow">↓</span>
+          </button>
+          <button class="sort-btn" data-sort="attack">
+            攻撃力 <span class="arrow">↕</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- カード表示 -->
+    <div class="enemy-grid" id="enemyGrid">
+      <!-- JSで生成 -->
+    </div>
+
+    <!-- テーブル表示 -->
+    <div class="enemy-table-wrapper" id="enemyTableWrapper">
+      <table class="enemy-table">
+        <thead>
+          <tr>
+            <th class="sortable" data-sort="name">名前</th>
+            <th class="sortable" data-sort="category">カテゴリ</th>
+            <th class="sortable" data-sort="rank">ランク</th>
+            <th class="sortable" data-sort="color">色</th>
+            <th class="sortable sorted-desc" data-sort="hp">HP</th>
+            <th class="sortable" data-sort="attack">攻撃力</th>
+          </tr>
+        </thead>
+        <tbody id="enemyTableBody">
+          <!-- JSで生成 -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <p>本ツールは非公式のファンメイドツールです。</p>
+    <p>ゼルダの伝説 ブレスオブザワイルド © Nintendo</p>
+  </footer>
+
+  <script src="enemies.js"></script>
+  <script>
+    // ==========================================
+    // アプリケーション
+    // ==========================================
+    const app = {
+      enemies: ENEMY_DATA,
+      filteredEnemies: [],
+      currentSort: { field: 'hp', order: 'desc' },
+      currentView: 'card',
+      filters: {
+        search: '',
+        category: '',
+        rank: '',
+        color: ''
+      },
+
+      init() {
+        document.getElementById('totalCount').textContent = this.enemies.length;
+        this.setupCategories();
+        this.setupColorFilters();
+        this.bindEvents();
+        this.applyFiltersAndSort();
+      },
+
+      // カテゴリセットアップ
+      setupCategories() {
+        const categories = [...new Set(this.enemies.map(e => e.category))];
+        const select = document.getElementById('categoryFilter');
+        categories.forEach(cat => {
+          const option = document.createElement('option');
+          option.value = cat;
+          option.textContent = cat;
+          select.appendChild(option);
+        });
+      },
+
+      // 色フィルターセットアップ
+      setupColorFilters() {
+        const colors = [...new Set(this.enemies.map(e => e.color))];
+        const container = document.getElementById('colorFilters');
+        
+        const allBtn = document.createElement('button');
+        allBtn.className = 'color-filter-btn active';
+        allBtn.dataset.color = '';
+        allBtn.innerHTML = '🎨 すべて';
+        container.appendChild(allBtn);
+
+        colors.forEach(color => {
+          const btn = document.createElement('button');
+          btn.className = 'color-filter-btn';
+          btn.dataset.color = color;
+          btn.innerHTML = `<span class="color-dot color-indicator ${color}"></span>${color}`;
+          container.appendChild(btn);
+        });
+      },
+
+      applyFiltersAndSort() {
+        this.filteredEnemies = this.enemies.filter(enemy => {
+          if (this.filters.search) {
+            const query = this.filters.search.toLowerCase();
+            if (!enemy.name.toLowerCase().includes(query) && 
+                !enemy.nameEn.toLowerCase().includes(query)) {
+              return false;
+            }
+          }
+          if (this.filters.category && enemy.category !== this.filters.category) return false;
+          if (this.filters.rank && enemy.rank !== this.filters.rank) return false;
+          if (this.filters.color && enemy.color !== this.filters.color) return false;
+          return true;
+        });
+
+        this.filteredEnemies.sort((a, b) => {
+          let valueA = a[this.currentSort.field];
+          let valueB = b[this.currentSort.field];
+          if (typeof valueA === 'string') {
+            valueA = valueA.toLowerCase();
+            valueB = valueB.toLowerCase();
+          }
+          if (this.currentSort.order === 'asc') {
+            return valueA > valueB ? 1 : -1;
+          } else {
+            return valueA < valueB ? 1 : -1;
+          }
+        });
+
+        this.render();
+      },
+
+      render() {
+        document.getElementById('displayCount').textContent = this.filteredEnemies.length;
+        if (this.currentView === 'card') {
+          this.renderCards();
+        } else {
+          this.renderTable();
+        }
+      },
+
+      renderCards() {
+        const container = document.getElementById('enemyGrid');
+        container.innerHTML = '';
+
+        if (this.filteredEnemies.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state" style="grid-column: 1 / -1;">
+              <div class="icon">🔍</div>
+              <p>条件に一致する魔物が見つかりません</p>
+            </div>
+          `;
+          return;
+        }
+
+        this.filteredEnemies.forEach((enemy, index) => {
+          const card = document.createElement('div');
+          card.className = 'enemy-card fade-in';
+          card.style.animationDelay = `${index * 0.03}s`;
+          const rankClass = this.getRankClass(enemy.rank);
+          const isDLC = enemy.isDLC ? '<span class="badge badge-dlc">DLC</span>' : '';
+
+          card.innerHTML = `
+            <div class="enemy-header">
+              <div>
+                <div class="enemy-name">${enemy.name}</div>
+                <div class="enemy-name-en">${enemy.nameEn}</div>
+              </div>
+              <div class="color-indicator ${enemy.color}" title="${enemy.color}"></div>
+            </div>
+            <div class="enemy-badges">
+              <span class="badge badge-category">${enemy.category}</span>
+              <span class="badge badge-rank ${rankClass}">${enemy.rank}</span>
+              ${isDLC}
+            </div>
+            <div class="enemy-stats">
+              <div class="stat-box">
+                <div class="stat-label">❤️ HP</div>
+                <div class="stat-value hp">${enemy.hp.toLocaleString()}</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-label">⚔️ 攻撃力</div>
+                <div class="stat-value attack">${enemy.attack}</div>
+              </div>
+            </div>
+            <div class="enemy-description">${enemy.description}</div>
+          `;
+          container.appendChild(card);
+        });
+      },
+
+      renderTable() {
+        const tbody = document.getElementById('enemyTableBody');
+        tbody.innerHTML = '';
+
+        if (this.filteredEnemies.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">条件に一致する魔物が見つかりません</td></tr>`;
+          return;
+        }
+
+        this.filteredEnemies.forEach(enemy => {
+          const tr = document.createElement('tr');
+          const isDLC = enemy.isDLC ? ' 🏆' : '';
+          tr.innerHTML = `
+            <td><strong>${enemy.name}</strong>${isDLC}<br><span style="font-size: 0.8rem; color: var(--text-muted);">${enemy.nameEn}</span></td>
+            <td>${enemy.category}</td>
+            <td><span class="badge badge-rank ${this.getRankClass(enemy.rank)}">${enemy.rank}</span></td>
+            <td><span class="color-indicator ${enemy.color}" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle; margin-right: 6px;"></span>${enemy.color}</td>
+            <td class="hp-cell">${enemy.hp.toLocaleString()}</td>
+            <td class="attack-cell">${enemy.attack}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      },
+
+      getRankClass(rank) {
+        const classMap = {
+          'ノーマル': 'normal', '中級': 'medium', '上級': 'high',
+          '最上級': 'max', 'DLC最上級': 'dlc', '特殊': 'medium',
+          'ボス級': 'boss', 'ラスボス': 'lastboss'
+        };
+        return classMap[rank] || '';
+      },
+
+      bindEvents() {
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+          this.filters.search = e.target.value;
+          this.applyFiltersAndSort();
+        });
+
+        document.getElementById('categoryFilter').addEventListener('change', (e) => {
+          this.filters.category = e.target.value;
+          this.applyFiltersAndSort();
+        });
+
+        document.getElementById('rankFilter').addEventListener('change', (e) => {
+          this.filters.rank = e.target.value;
+          this.applyFiltersAndSort();
+        });
+
+        document.getElementById('colorFilters').addEventListener('click', (e) => {
+          const btn = e.target.closest('.color-filter-btn');
+          if (!btn) return;
+          document.querySelectorAll('.color-filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          this.filters.color = btn.dataset.color;
+          this.applyFiltersAndSort();
+        });
+
+        document.querySelectorAll('.sort-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const field = btn.dataset.sort;
+            if (this.currentSort.field === field) {
+              this.currentSort.order = this.currentSort.order === 'asc' ? 'desc' : 'asc';
+            } else {
+              this.currentSort.field = field;
+              this.currentSort.order = field === 'name' ? 'asc' : 'desc';
+            }
+            document.querySelectorAll('.sort-btn').forEach(b => {
+              b.classList.remove('active');
+              b.querySelector('.arrow').textContent = '↕';
+            });
+            btn.classList.add('active');
+            btn.querySelector('.arrow').textContent = this.currentSort.order === 'asc' ? '↑' : '↓';
+            this.applyFiltersAndSort();
+          });
+        });
+
+        document.querySelectorAll('.enemy-table th.sortable').forEach(th => {
+          th.addEventListener('click', () => {
+            const field = th.dataset.sort;
+            if (this.currentSort.field === field) {
+              this.currentSort.order = this.currentSort.order === 'asc' ? 'desc' : 'asc';
+            } else {
+              this.currentSort.field = field;
+              this.currentSort.order = field === 'name' || field === 'category' ? 'asc' : 'desc';
+            }
+            document.querySelectorAll('.enemy-table th').forEach(h => h.classList.remove('sorted-asc', 'sorted-desc'));
+            th.classList.add(this.currentSort.order === 'asc' ? 'sorted-asc' : 'sorted-desc');
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+              btn.classList.remove('active');
+              btn.querySelector('.arrow').textContent = '↕';
+              if (btn.dataset.sort === field) {
+                btn.classList.add('active');
+                btn.querySelector('.arrow').textContent = this.currentSort.order === 'asc' ? '↑' : '↓';
+              }
+            });
+            this.applyFiltersAndSort();
+          });
+        });
+
+        document.getElementById('cardViewBtn').addEventListener('click', () => {
+          this.currentView = 'card';
+          document.getElementById('cardViewBtn').classList.add('active');
+          document.getElementById('tableViewBtn').classList.remove('active');
+          document.getElementById('enemyGrid').classList.remove('hide');
+          document.getElementById('enemyTableWrapper').classList.remove('show');
+          this.render();
+        });
+
+        document.getElementById('tableViewBtn').addEventListener('click', () => {
+          this.currentView = 'table';
+          document.getElementById('tableViewBtn').classList.add('active');
+          document.getElementById('cardViewBtn').classList.remove('active');
+          document.getElementById('enemyGrid').classList.add('hide');
+          document.getElementById('enemyTableWrapper').classList.add('show');
+          this.render();
+        });
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => app.init());
+  </script>
+</body>
+</html>
+
