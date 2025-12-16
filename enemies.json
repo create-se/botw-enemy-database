@@ -302,36 +302,36 @@
     },
     {
       "id": 28,
-      "name": "小型ガーディアンII",
+      "name": "小型ガーディアン（序位）",
       "nameEn": "Guardian Scout II",
       "category": "ガーディアン系",
       "rank": "中級",
       "color": "機械",
       "hp": 375,
       "attack": 15,
-      "description": "より強力な小型ガーディアン。"
+      "description": "力の試練 序位の祠に出現。"
     },
     {
       "id": 29,
-      "name": "小型ガーディアンIII",
+      "name": "小型ガーディアン（中位）",
       "nameEn": "Guardian Scout III",
       "category": "ガーディアン系",
       "rank": "上級",
       "color": "機械",
       "hp": 1500,
       "attack": 25,
-      "description": "かなり強力な小型ガーディアン。"
+      "description": "力の試練 中位の祠に出現。"
     },
     {
       "id": 30,
-      "name": "小型ガーディアンIV",
+      "name": "小型ガーディアン（極位）",
       "nameEn": "Guardian Scout IV",
       "category": "ガーディアン系",
       "rank": "最上級",
       "color": "機械",
       "hp": 3000,
       "attack": 35,
-      "description": "最も強力な小型ガーディアン。試練の祠に出現。"
+      "description": "力の試練 極位の祠に出現。最強の小型ガーディアン。"
     },
     {
       "id": 31,
@@ -687,7 +687,7 @@
     },
     {
       "id": 63,
-      "name": "モルドラガ",
+      "name": "キングラジーク",
       "nameEn": "Molduking",
       "category": "ボス系",
       "rank": "ボス級",
