@@ -40,7 +40,7 @@ const ENEMY_DATA = [
   { id: 36, name: "マグロック", nameEn: "Igneo Talus", category: "イワロック系", rank: "中級", color: "赤", hp: 800, attack: 48, description: "溶岩地帯に生息する炎のイワロック。" },
   { id: 37, name: "アイスロック", nameEn: "Frost Talus", category: "イワロック系", rank: "中級", color: "白", hp: 800, attack: 48, description: "雪山に生息する氷のイワロック。" },
   { id: 38, name: "希少イワロック", nameEn: "Rare Stone Talus", category: "イワロック系", rank: "上級", color: "金", hp: 900, attack: 32, description: "宝石をドロップする希少なイワロック。" },
-  { id: 39, name: "マグロック・タイタン", nameEn: "Igneo Talus Titan", category: "イワロック系", rank: "ボス級", color: "赤", hp: 1800, attack: 64, description: "超巨大な炎のイワロック。" },
+  { id: 39, name: "メガマグロック", nameEn: "Igneo Talus Titan", category: "イワロック系", rank: "ボス級", color: "赤", hp: 1800, attack: 64, description: "超巨大な炎のイワロック。" },
   { id: 40, name: "オクタロック", nameEn: "Octorok", category: "オクタロック系", rank: "ノーマル", color: "緑", hp: 8, attack: 4, description: "岩を吐いて攻撃するタコ型の魔物。" },
   { id: 41, name: "森オクタロック", nameEn: "Forest Octorok", category: "オクタロック系", rank: "ノーマル", color: "緑", hp: 8, attack: 4, description: "森に擬態するオクタロック。" },
   { id: 42, name: "水オクタロック", nameEn: "Water Octorok", category: "オクタロック系", rank: "ノーマル", color: "青", hp: 8, attack: 4, description: "水中に潜むオクタロック。" },
