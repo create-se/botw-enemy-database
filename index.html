@@ -571,6 +571,110 @@
     }
 
     /* ==========================================
+       説明セクション
+       ========================================== */
+    .info-section {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-top: 40px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+    }
+
+    .info-section h2 {
+      font-size: 1.2rem;
+      color: var(--accent-blue);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .info-card {
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+
+    .info-card h3 {
+      font-size: 1rem;
+      color: var(--accent-orange);
+      margin-bottom: 12px;
+    }
+
+    .info-card p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 8px;
+    }
+
+    .info-card code {
+      display: inline-block;
+      background: var(--bg-primary);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-family: 'SF Mono', 'Consolas', monospace;
+      font-size: 0.85rem;
+      color: var(--accent-gold);
+      margin: 8px 0;
+    }
+
+    .info-card ul {
+      margin-left: 20px;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    .info-card li {
+      margin-bottom: 4px;
+    }
+
+    .damage-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 0.85rem;
+    }
+
+    .damage-table th,
+    .damage-table td {
+      padding: 8px 12px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+    }
+
+    .damage-table th {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+    }
+
+    .damage-table td {
+      color: var(--text-primary);
+    }
+
+    .note {
+      background: rgba(231, 76, 60, 0.1);
+      border-left: 3px solid var(--accent-red);
+      padding: 12px 16px;
+      margin-top: 16px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .note strong {
+      color: var(--accent-red);
+    }
+
+    /* ==========================================
        レスポンシブ
        ========================================== */
     @media (max-width: 768px) {
@@ -635,11 +739,6 @@
           </select>
         </div>
       </div>
-
-      <!-- 色フィルター -->
-      <div class="color-filters" id="colorFilters">
-        <!-- JSで生成 -->
-      </div>
     </div>
 
     <!-- 統計バーとソート -->
@@ -689,6 +788,61 @@
         </tbody>
       </table>
     </div>
+
+    <!-- ダメージ計算の説明 -->
+    <section class="info-section">
+      <h2>📖 データについて</h2>
+      
+      <div class="info-grid">
+        <div class="info-card">
+          <h3>⚔️ ダメージ計算式</h3>
+          <p>リンクが受けるダメージは以下の式で計算されます：</p>
+          <code>受けるダメージ = 敵の攻撃力 − リンクの防御力</code>
+          <p><strong>4ダメージ = ハート1個分</strong></p>
+          <table class="damage-table">
+            <thead>
+              <tr>
+                <th>攻撃力</th>
+                <th>防御0の場合</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>4</td><td>❤️ 1個</td></tr>
+              <tr><td>20</td><td>❤️ 5個</td></tr>
+              <tr><td>40</td><td>❤️ 10個</td></tr>
+              <tr><td>100</td><td>❤️ 25個</td></tr>
+            </tbody>
+          </table>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 8px;">
+            ※ダメージが0以下でも最低1（ハート1/4個）は受けます
+          </p>
+        </div>
+
+        <div class="info-card">
+          <h3>📊 攻撃力データについて</h3>
+          <p>本ツールの攻撃力は<strong>非公式データ</strong>です。</p>
+          <ul>
+            <li>ゲーム内では攻撃力は表示されません</li>
+            <li>データマイニング・検証による推定値です</li>
+            <li>敵の<strong>素手での攻撃力</strong>を示しています</li>
+            <li>実際は敵が持つ武器の攻撃力が加算されます</li>
+          </ul>
+          <div class="note">
+            <strong>⚠️ 注意：</strong>攻撃力は参考値としてご利用ください。実際のダメージは敵の武器や攻撃パターンによって異なります。
+          </div>
+        </div>
+
+        <div class="info-card">
+          <h3>❤️ HPデータについて</h3>
+          <p>HPは<strong>公式データ</strong>です。</p>
+          <ul>
+            <li>ゲーム内のハイラル図鑑で確認可能</li>
+            <li>敵を撮影すると図鑑に登録されます</li>
+            <li>図鑑でHPを確認できます</li>
+          </ul>
+        </div>
+      </div>
+    </section>
   </div>
 
   <footer>
@@ -709,14 +863,12 @@
       filters: {
         search: '',
         category: '',
-        rank: '',
-        color: ''
+        rank: ''
       },
 
       init() {
         document.getElementById('totalCount').textContent = this.enemies.length;
         this.setupCategories();
-        this.setupColorFilters();
         this.bindEvents();
         this.applyFiltersAndSort();
       },
@@ -733,26 +885,6 @@
         });
       },
 
-      // 色フィルターセットアップ
-      setupColorFilters() {
-        const colors = [...new Set(this.enemies.map(e => e.color))];
-        const container = document.getElementById('colorFilters');
-        
-        const allBtn = document.createElement('button');
-        allBtn.className = 'color-filter-btn active';
-        allBtn.dataset.color = '';
-        allBtn.innerHTML = '🎨 すべて';
-        container.appendChild(allBtn);
-
-        colors.forEach(color => {
-          const btn = document.createElement('button');
-          btn.className = 'color-filter-btn';
-          btn.dataset.color = color;
-          btn.innerHTML = `<span class="color-dot color-indicator ${color}"></span>${color}`;
-          container.appendChild(btn);
-        });
-      },
-
       applyFiltersAndSort() {
         this.filteredEnemies = this.enemies.filter(enemy => {
           if (this.filters.search) {
@@ -764,7 +896,6 @@
           }
           if (this.filters.category && enemy.category !== this.filters.category) return false;
           if (this.filters.rank && enemy.rank !== this.filters.rank) return false;
-          if (this.filters.color && enemy.color !== this.filters.color) return false;
           return true;
         });
 
@@ -890,15 +1021,6 @@
 
         document.getElementById('rankFilter').addEventListener('change', (e) => {
           this.filters.rank = e.target.value;
-          this.applyFiltersAndSort();
-        });
-
-        document.getElementById('colorFilters').addEventListener('click', (e) => {
-          const btn = e.target.closest('.color-filter-btn');
-          if (!btn) return;
-          document.querySelectorAll('.color-filter-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          this.filters.color = btn.dataset.color;
           this.applyFiltersAndSort();
         });
 
